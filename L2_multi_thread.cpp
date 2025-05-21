@@ -44,8 +44,6 @@ Future Extensions:
 - Support for QoS class tagging and scheduling.
 - Advanced HARQ and timer-based retransmission.
 
-Author: Hamed Hosseinnejad
-Date: May 2025
 */
 
 
