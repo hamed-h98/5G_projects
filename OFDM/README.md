@@ -1,4 +1,84 @@
-## OFDM Signal Processing (Receiver Side) 
+## OFDM Signal Generation, Noise Injection, and Analysis in MATLAB
+
+This MATLAB script simulates a realistic OFDM signal transmission system, including QPSK modulation, cyclic prefix insertion, noise padding, in-band noise injection, and visualization of subcarrier power and signal characteristics.
+
+---
+
+## **Features**
+
+* **QPSK Modulation** over 109 active subcarriers (excluding DC)
+* **IFFT-based OFDM symbol generation** with cyclic prefix (CP)
+* **Preamble symbol generation** for synchronization
+* **Customizable noise injection** with a controllable SNR
+* **Addition of Gaussian noise padding** (guard intervals) before and after the signal
+* **Power spectrum, subcarrier visualization, and autocorrelation plots**
+
+---
+
+## **Parameters & Settings**
+
+| Parameter       | Value    | Description                             |
+| --------------- | -------- | --------------------------------------- |
+| `ifft_size`     | 720      | Number of IFFT points (FFT size)        |
+| `cp_length`     | 80       | Cyclic prefix length                    |
+| `mod_order`     | 4        | Modulation order (QPSK)                 |
+| `num_symbols`   | 20       | Number of OFDM symbols                  |
+| `num_active`    | 109      | Number of active subcarriers            |
+| `SNR (in-band)` | 30 dB    | Signal-to-noise ratio for in-band noise |
+| `Noise padding` | 600/1000 | Pre-/Post-padding with Gaussian noise   |
+
+---
+
+## **Main Steps**
+
+1. **Active Subcarrier Selection**
+   The subcarriers are symmetrically selected around the DC index (which is nulled).
+
+2. **Random QPSK Data Generation**
+   Generates QPSK symbols for all OFDM symbols.
+
+3. **Preamble Generation**
+   One known QPSK symbol inserted at the beginning for synchronization (optional).
+
+4. **OFDM Symbol Construction**
+
+   * QPSK symbols are mapped to active subcarriers.
+   * IFFT is applied to obtain time-domain symbols.
+   * Cyclic prefix is added.
+   * All symbols are concatenated.
+
+5. **Noise Modeling**
+
+   * In-band complex Gaussian noise is added based on a target SNR.
+   * Additional noise is appended before and after the OFDM signal to simulate guard bands.
+
+6. **Signal Normalization**
+   Power of the final signal is normalized to unit power.
+
+7. **Saving Output**
+   The final noisy OFDM signal is saved as `OFDM_Rx_Signal.mat`.
+
+---
+
+## **Visualizations**
+
+* **Raw Signal Plot**: Time-domain magnitude of the full signal with noise.
+* **Autocorrelation Plot**: Shows time-domain signal periodicity and structure.
+* **Subcarrier Power Spectrogram**: 2D heatmap showing the power of each subcarrier across OFDM symbols.
+* **Power Spectral Density (PSD)**: Plots average power across subcarriers.
+
+---
+
+### **Applications**
+
+* Receiver synchronization and CP estimation experiments
+* Channel estimation and equalization testbed
+* Machine learning dataset generation for OFDM tasks
+* Realistic SNR testing scenarios with controlled noise
+
+---
+
+## OFDM Signal Processing (Receiver Side, Python Implementation)
 
 A complete **baseband receiver-side analysis** of an OFDM signal:
 

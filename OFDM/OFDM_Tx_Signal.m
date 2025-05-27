@@ -10,9 +10,6 @@ num_symbols = 20;
 mod_order = 4;             % QPSK
 dc_index = ifft_size / 2 + 1;
 
-% Active subcarriers
-% lower_edge = 267;
-% upper_edge = 375;
 
 % active_subcarriers = lower_edge:upper_edge;
 % % Explicitly remove DC subcarrier
@@ -141,8 +138,11 @@ power_matrix = abs(X_fft).^2;             % shape: [num_symbols, Ld]
 full_power = zeros(num_symbols_actual, ifft_size);
 full_power(:, :) = power_matrix;  % Since Ld = ifft_size
 
-% Plot
-figure;
+figure(1) 
+plot(abs(final_signal));
+title('Received OFDM Signal with Noise');
+
+figure(2);
 power_db = 10*log10(power_matrix + 1e-12);  % avoid log(0)
 imagesc(0:num_symbols-1, 1:ifft_size, power_db.');
 colormap(jet);  % better dynamic color range
@@ -153,8 +153,11 @@ title('Subcarrier Power (Linear Scale)');
 xlabel('Symbol Index');
 ylabel('Subcarrier Index');
 hold on;
-% yline(upper_edge, 'r--', 'Subcarrier 375');
-% yline(lower_edge, 'r--', 'Subcarrier 267');
+% Active subcarriers
+% lower_edge = 320;
+% upper_edge = 400;
+% yline(upper_edge, 'r--', 'Upper Edge Sugcarrier');
+% yline(lower_edge, 'r--', 'Lower Edge Subcarrier');
 xlim([0 num_symbols_actual - 1]);
 ylim([0 ifft_size]);
 legend('Guard Band Limits');
@@ -172,7 +175,7 @@ Rxx_positive = Rxx(lags >= 0);
 lags_positive = lags(lags >= 0);
 
 % Plotting Autocorrelation
-figure;
+figure(3);
 plot(lags_positive, abs(Rxx_positive));
 title('Autocorrelation of the Received Signal');
 xlabel('Lag');
@@ -186,12 +189,9 @@ avg_power = mean(abs(X_fft_shifted).^2, 1);  % average over symbols
 % Plot average PSD
 avg_power = mean(power_matrix, 1);
 freq_axis = -ifft_size/2 : ifft_size/2 - 1;
-figure;
+figure(4);
 plot(freq_axis, avg_power, 'LineWidth', 1.2);
 xlabel('Subcarrier Index (centered)');
 ylabel('Power');
 title('Power Spectrum of OFDM with Noise Floor');
 grid on;
-
-figure 
-plot(abs(final_signal));
