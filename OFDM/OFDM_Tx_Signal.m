@@ -10,13 +10,6 @@ num_symbols = 20;
 mod_order = 4;             % QPSK
 dc_index = ifft_size / 2 + 1;
 
-
-% active_subcarriers = lower_edge:upper_edge;
-% % Explicitly remove DC subcarrier
-% active_subcarriers(active_subcarriers == dc_index) = [];
-% % Number of active subcarriers
-% num_active = length(active_subcarriers);
-
 % Number of active subcarriers
 num_active = 109;
 half = floor(num_active / 2);
@@ -113,7 +106,7 @@ final_signal = [noise_before; ofdm_signal_noisy; noise_after];
 
 
 % Save
-save('realistic_ofdm_with_guardbands.mat', 'final_signal');
+save('OFDM_Rx_Signal.mat', 'final_signal');
 
 % === Visualization: Subcarrier Power ===
 % Remove CP and reshape
