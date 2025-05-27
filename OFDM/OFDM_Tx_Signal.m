@@ -16,7 +16,6 @@ half = floor(num_active / 2);
 active_subcarriers = (dc_index - half):(dc_index + half);  % symmetrical around DC
 active_subcarriers(active_subcarriers == dc_index) = [];   % remove DC
 
-
 % Generate random QPSK data
 bits_per_symbol = log2(mod_order);
 total_bits = num_active * num_symbols * bits_per_symbol;
@@ -29,10 +28,10 @@ qpsk_data = qpsk_data / sqrt(2);  % Normalized QPSK
 ofdm_signal = [];
 symbol_matrix = zeros(num_symbols, ifft_size);
 
-% ==== Define and Generate a Known QPSK Preamble ====
+% Define and Generate a Known QPSK Preamble 
 num_preamble = 1;
 
-% Ensure num_active is consistent with active_subcarriers length
+% Ensuring num_active is consistent with active_subcarriers length
 num_active = length(active_subcarriers);  % Derived from subcarrier indices
 
 % Generate QPSK bits for the preamble (2 bits per symbol)
@@ -49,18 +48,13 @@ repeat_freq_data(dc_index) = 0;  % Explicitly null the DC
 % ==== Generate remaining random OFDM symbols ====
 for i = 1:num_symbols
     freq_data = zeros(ifft_size, 1);
-
     idx_start = (i - 1) * num_active + 1;
     idx_end = i * num_active;
     this_symbol = qpsk_data(idx_start:idx_end);
-
     freq_data(active_subcarriers) = this_symbol;  % Map to subcarriers
     freq_data(dc_index) = 0;                      % Explicit DC null
-
     symbol_matrix(i, :) = freq_data;              % For visualization
-
-    time_data = ifft(ifftshift(freq_data)) * sqrt(ifft_size);  % ✅ correct
-
+    time_data = ifft(ifftshift(freq_data)) * sqrt(ifft_size);
     cp = time_data(end - cp_length + 1 : end);
     ofdm_symbol = [cp; time_data];
     ofdm_signal = [ofdm_signal; ofdm_symbol];
@@ -175,9 +169,7 @@ xlabel('Lag');
 ylabel('Autocorrelation Coefficient');
 
 freq_axis = -ifft_size/2 : ifft_size/2 - 1;
-
 avg_power = mean(abs(X_fft_shifted).^2, 1);  % average over symbols
-
 
 % Plot average PSD
 avg_power = mean(power_matrix, 1);
