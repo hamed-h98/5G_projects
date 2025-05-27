@@ -2,12 +2,12 @@ clc
 clear
 close all 
 % Parameters
-ifft_size = 720;           % FFT size
+ifft_size = 720; % FFT size
 cp_length = 80;
 Ld = ifft_size;
 Ls = Ld + cp_length;
 num_symbols = 20;
-mod_order = 4;             % QPSK
+mod_order = 4; % QPSK
 dc_index = ifft_size / 2 + 1;
 
 % Number of active subcarriers
@@ -62,15 +62,6 @@ end
 
 % Normalize final signal to max amplitude = 3
 ofdm_signal = ofdm_signal / sqrt(mean(abs(ofdm_signal).^2));  % Normalize to unit power
-
-% % Padding
-% left_pad = 600;
-% right_pad = 1000;
-% noise_std = 0.01;
-% noise_before = noise_std * (randn(left_pad,1) + 1j*randn(left_pad,1));
-% noise_after  = noise_std * (randn(right_pad,1) + 1j*randn(right_pad,1));
-% % final_signal = [noise_before; ofdm_signal; noise_after];
-
 
 % Desired in-band SNR control
 signal_power = mean(abs(ofdm_signal).^2);
