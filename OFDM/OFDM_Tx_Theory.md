@@ -9,9 +9,9 @@ This document explains the theoretical principles and mathematical formulations 
 OFDM divides the total channel bandwidth into multiple orthogonal subcarriers. Each subcarrier carries a portion of the data in parallel, making the system resilient to multipath fading.
 
 Let:
-- \( N \): IFFT size (number of subcarriers)
-- \( X[k] \): QPSK symbol on the \(k^\text{th}\) subcarrier
-- \( x[n] \): Time-domain OFDM signal
+- $N$: IFFT size (number of subcarriers)
+- $X[k]$: QPSK symbol on the $k^\text{th}$ subcarrier
+- $x[n]$: Time-domain OFDM signal
 
 The time-domain signal is obtained using the inverse FFT:
 
@@ -24,7 +24,7 @@ $$
 ## 2. Subcarrier Allocation and DC Nulling
 
 - Active subcarriers are chosen symmetrically around the center.
-- The DC subcarrier (at \(k = N/2\)) is set to zero to eliminate carrier leakage.
+- The DC subcarrier (at $k = N/2$) is set to zero to eliminate carrier leakage.
 - Guard bands are left unused to avoid spectral leakage into adjacent channels.
 
 ---
@@ -84,25 +84,25 @@ $$
 AWGN simulates channel impairments. It is added with a controlled Signal-to-Noise Ratio (SNR):
 
 - Target SNR in dB:
-  $$
-  \text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}} \right)
-  $$
+$$
+\text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}} \right)
+$$
 - Convert to linear scale:
-  $$
+$$
   \text{SNR}_{\text{linear}} = 10^{\text{SNR}_{\text{dB}} / 10}
-  $$
+$$
 - Noise power:
-  $$
+$$
   P_{\text{noise}} = \frac{P_{\text{signal}}}{\text{SNR}_{\text{linear}}}
-  $$
+$$
 - AWGN samples:
-  $$
-  w[n] = \sqrt{\frac{P_{\text{noise}}}{2}} \cdot \left( \mathcal{N}(0,1) + j \mathcal{N}(0,1) \right)
-  $$
+$$
+w[n] = \sqrt{\frac{P_{\text{noise}}}{2}} \cdot \left( \mathcal{N}(0,1) + j \mathcal{N}(0,1) \right)
+$$
 - Final noisy signal:
-  $$
-  x_{\text{noisy}}[n] = x_{\text{total}}[n] + w[n]
-  $$
+$$
+x_{\text{noisy}}[n] = x_{\text{total}}[n] + w[n]
+$$
 
 ---
 
