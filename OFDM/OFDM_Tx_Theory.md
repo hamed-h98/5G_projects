@@ -41,10 +41,10 @@ $$
 
 | Bits | Symbol |
 |------|--------|
-| 00   | $ \frac{1 + j}{\sqrt{2}} $ |
-| 01   | $ \frac{-1 + j}{\sqrt{2}} $ |
-| 10   | $ \frac{1 - j}{\sqrt{2}} $ |
-| 11   | $ \frac{-1 - j}{\sqrt{2}} $ |
+| 00   | $\frac{1 + j}{\sqrt{2}}$ |
+| 01   | $\frac{-1 + j}{\sqrt{2}}$ |
+| 10   | $\frac{1 - j}{\sqrt{2}}$ |
+| 11   | $\frac{-1 - j}{\sqrt{2}}$ |
 
 The symbols are normalized to have unit average power:
 $$
