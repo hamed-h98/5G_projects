@@ -1,6 +1,6 @@
 ## OFDM Signal Generation, Noise Injection, and Analysis in MATLAB
 
-The MATLAB script `OFDM_Tx_Signal.m`, simulates a realistic OFDM signal transmission system, including QPSK modulation, cyclic prefix insertion, noise padding, in-band noise injection, and visualization of subcarrier power and signal characteristics.
+The Live MATLAB script `OFDM_Tx.mlx`, simulates a realistic OFDM signal transmission system with theoretical explanations, including QPSK modulation, OFDM generation, cyclic prefix insertion, noise padding, in-band noise injection, and visualization of subcarrier power and signal characteristics.
 
 ---
 
