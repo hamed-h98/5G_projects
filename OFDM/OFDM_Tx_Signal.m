@@ -2,50 +2,76 @@ clc
 clear
 close all 
 % Parameters
-ifft_size = 720; % FFT size
+ifft_size = 720; % FFT size, or number of subcarriers 
 cp_length = 80;
 Ld = ifft_size;
 Ls = Ld + cp_length;
-num_symbols = 20;
+num_symbols = 20; 
+% time domain: each symbol carries 720 subcarriers at time sample i, where i = 1:20
 mod_order = 4; % QPSK
 dc_index = ifft_size / 2 + 1;
 
 % Number of active subcarriers
-num_active = 109;
+num_active = 109; % number of active subcarriers
 half = floor(num_active / 2);
 active_subcarriers = (dc_index - half):(dc_index + half);  % symmetrical around DC
 active_subcarriers(active_subcarriers == dc_index) = [];   % remove DC
 
-% Generate random QPSK data
-bits_per_symbol = log2(mod_order);
-total_bits = num_active * num_symbols * bits_per_symbol;
-bits = randi([0 1], total_bits, 1);
-symbols = reshape(bits, [], bits_per_symbol);
+%%%%%%%%%%%%% Generate random QPSK data %%%%%%%%%%%%%%
+bits_per_symbol = log2(mod_order); % 2 bits per symbol for QPSK 
+
+total_bits = num_active * num_symbols * bits_per_symbol; 
+% 109 active subcarriers * 20 time samples * 2 bits per symbol = total bits
+
+bits = randi([0 1], total_bits, 1); % random bits generation [1x4360] bits 
+symbols = reshape(bits, [], bits_per_symbol); % 2 bits per symbol for QPSK
+
+% Reshape the bit stream into a matrix with 2 columns (each row = 1 QPSK symbol).
+% e.g., bits = [1 0  0 1  1 1  0 0 ...]
+% symbols = 
+%    1 0  → Symbol 1  
+%    0 1  → Symbol 2  
+%    1 1  → Symbol 3  
+%    0 0  → Symbol 4
+
 qpsk_data = (2 * symbols(:,1) - 1) + 1j * (2 * symbols(:,2) - 1);
 qpsk_data = qpsk_data / sqrt(2);  % Normalized QPSK
 
-% OFDM Signal generation
+% Map bits to QPSK symbols
+% ---------------------------------------
+% QPSK maps 2 bits to 1 complex symbol:
+%   - First bit → real part (I)
+%   - Second bit → imaginary part (Q)
+% Mapping logic:
+%   bit 0 → -1, bit 1 → +1
+% So:
+%   [0 0] → -1 - j
+%   [0 1] → -1 + j
+%   [1 0] → +1 - j
+%   [1 1] → +1 + j
+
+% e.g., for [0 1]:
+% (2 * symbols(:,1) - 1) + 1j * (2 * symbols(:,2) - 1);
+% (2 * 0 - 1) + 1j*(2 * 1 - 1) = -1 + j 
+
+% This mapping is Gray-coded (adjacent symbols differ by one bit),
+% which reduces bit error rate in noisy channels.
+%
+% The QPSK symbol is created using:
+%   I = 2*bit1 - 1
+%   Q = 2*bit2 - 1
+% And then combined as: I + j*Q
+%
+% The optional normalization is:
+%   qpsk_data = qpsk_data / sqrt(2);
+
+
+%%%%%%%%%% OFDM Signal generation %%%%%%%%%%%
 ofdm_signal = [];
-symbol_matrix = zeros(num_symbols, ifft_size);
+symbol_matrix = zeros(num_symbols, ifft_size); % 20 x 720 
+% Ensuring num_active is consistent with active_subcarriers length (109 -> 108 because of DC null)
+num_active = length(active_subcarriers);  
 
-% Define and Generate a Known QPSK Preamble 
-num_preamble = 1;
-
-% Ensuring num_active is consistent with active_subcarriers length
-num_active = length(active_subcarriers);  % Derived from subcarrier indices
-
-% Generate QPSK bits for the preamble (2 bits per symbol)
-preamble_bits = randi([0 1], num_active * 2, 1);
-preamble_symbols = reshape(preamble_bits, [], 2);
-preamble_qpsk = (2 * preamble_symbols(:,1) - 1) + 1j * (2 * preamble_symbols(:,2) - 1);
-preamble_qpsk = preamble_qpsk / sqrt(2);  % Normalize QPSK power
-
-% Create frequency-domain vector and assign preamble symbols
-repeat_freq_data = zeros(ifft_size, 1);
-repeat_freq_data(active_subcarriers) = preamble_qpsk;
-repeat_freq_data(dc_index) = 0;  % Explicitly null the DC
-
-% ==== Generate remaining random OFDM symbols ====
 for i = 1:num_symbols
     freq_data = zeros(ifft_size, 1);
     idx_start = (i - 1) * num_active + 1;
@@ -57,17 +83,11 @@ for i = 1:num_symbols
     time_data = ifft(ifftshift(freq_data)) * sqrt(ifft_size);
     cp = time_data(end - cp_length + 1 : end);
     ofdm_symbol = [cp; time_data];
-    ofdm_signal = [ofdm_signal; ofdm_symbol];
+    ofdm_signal = [ofdm_signal; ofdm_symbol]; % vertical concatenation, for appending this symbol below the existing signal.
 end
 
 % Normalize final signal to max amplitude = 3
 ofdm_signal = ofdm_signal / sqrt(mean(abs(ofdm_signal).^2));  % Normalize to unit power
-
-% Desired in-band SNR control
-signal_power = mean(abs(ofdm_signal).^2);
-target_snr_db = 25;  % e.g., 20 dB SNR
-target_snr_linear = 10^(target_snr_db/10);
-noise_power = signal_power / target_snr_linear;
 
 % Add in-band noise
 % Set stronger noise level
@@ -89,7 +109,6 @@ noise_after  = noise_std * (randn(right_pad,1) + 1j*randn(right_pad,1));
 % Final signal
 final_signal = [noise_before; ofdm_signal_noisy; noise_after];
 
-
 % Save
 save('OFDM_Rx_Signal.mat', 'final_signal');
 
@@ -99,7 +118,7 @@ X_matrix = reshape(ofdm_signal_noisy, Ls, []).';
 X_no_cp = X_matrix(:, cp_length+1:end);
 X_fft = fft(X_no_cp, [], 2);
 X_fft_shifted = fftshift(X_fft, 2);
-power_matrix = abs(X_fft_shifted).^2;
+% power_matrix = abs(X_fft_shifted).^2;
 
 % Reshape OFDM symbols
 num_symbols_actual = length(ofdm_signal) / Ls;
