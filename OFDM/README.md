@@ -2,6 +2,8 @@
 
 The Live MATLAB script `OFDM_Tx.mlx`, simulates a realistic OFDM signal transmission system with theoretical explanations, including QPSK modulation, OFDM generation, cyclic prefix insertion, noise padding, in-band noise injection, and visualization of subcarrier power and signal characteristics.
 
+Moreover, the `OFDM_Tx_Signal.m` is the same script as the `OFDM_Tx.mlx`, only without explanations and it's m-file. 
+
 ---
 
 ## **Features**
