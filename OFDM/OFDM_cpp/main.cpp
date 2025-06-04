@@ -15,3 +15,13 @@ int main() {
     std::cout << "OFDM signal generated and saved to ofdm_output.dat\n";
     return 0;
 }
+
+// run in terminal:
+
+// g++ -std=c++17 main.cpp OFDMTransmitter.cpp \
+//     -I/opt/homebrew/opt/fftw/include \
+//     -L/opt/homebrew/opt/fftw/lib \
+//     -lfftw3f -o ofdm_tx
+
+// ./ofdm_tx
+
