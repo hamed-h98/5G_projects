@@ -92,13 +92,13 @@ $$
 Convert to linear scale:
 
 $$
-  \text{SNR}_{\text{linear}} = 10^{\text{SNR}_{\text{dB}} / 10}
+\text{SNR}_{\text{linear}} = 10^{\text{SNR}_{\text{dB}} / 10}
 $$
 
 Noise power:
 
 $$
-  P_{\text{noise}} = \frac{P_{\text{signal}}}{\text{SNR}_{\text{linear}}}
+P_{\text{noise}} = \frac{P_{\text{signal}}}{\text{SNR}_{\text{linear}}}
 $$
 
 AWGN samples:
