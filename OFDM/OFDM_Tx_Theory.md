@@ -85,15 +85,11 @@ AWGN simulates channel impairments. It is added with a controlled Signal-to-Nois
 
 Target SNR in dB:
 
-$$
-\text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}} \right)
-$$
+$$\text{SNR}_{\text{dB}} = 10 \log_{10} \left( \frac{P_{\text{signal}}}{P_{\text{noise}}}\right)$$
 
 Convert to linear scale:
 
-$$
-\text{SNR}_{\text{linear}} = 10^{\text{SNR}_{\text{dB}} / 10}
-$$
+$$\text{SNR}_{\text{linear}} = 10^{\text{SNR}_{\text{dB}}/10}$$
 
 Noise power:
 
