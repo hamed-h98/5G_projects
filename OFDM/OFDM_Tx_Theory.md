@@ -1,16 +1,18 @@
 # Theoretical Foundations of OFDM Signal Generation with QPSK
 
-This document explains the theoretical principles and mathematical formulations behind the OFDM signal generation, modulation, and noise modeling used in the system.
+This document explains the theoretical principles and mathematical formulations behind the OFDM signal generation, modulation, and noise modeling.
+
+The implementation is in `OFDM_Tx_Signal.m`. 
 
 ---
 
 ## 1. OFDM
 
-OFDM divides the total channel bandwidth into multiple orthogonal subcarriers. Each subcarrier carries a portion of the data in parallel, making the system resilient to multipath fading.
+OFDM divides the total channel bandwidth into multiple orthogonal subcarriers. Each subcarrier carries a portion of the data in parallel, making the system resilient to multipath fading and ISI.
 
 Let:
 - $N$: IFFT size (number of subcarriers)
-- $X[k]$: QPSK symbol on the $k^\text{th}$ subcarrier
+- $X[k]$: modulated symbol (e.g., QPSK, M-QAM) on the $k^\text{th}$ subcarrier
 - $x[n]$: Time-domain OFDM signal
 
 The time-domain signal is obtained using the inverse FFT:
@@ -29,9 +31,11 @@ $$
 
 ---
 
-## 3. QPSK Modulation
+## 3. Modulation
 
-QPSK (Quadrature Phase Shift Keying) encodes 2 bits per symbol using orthogonal in-phase (I) and quadrature (Q) components.
+For the modulation, QPSK (Quadrature Phase Shift Keying) is chosen which encodes 2 bits per symbol using orthogonal in-phase (I) and quadrature (Q) components. 
+
+Note that QPSK is equivalent to 4-QAM.
 
 QPSK symbol set:
 
@@ -126,3 +130,4 @@ $$
 This helps in testing synchronization, thresholding, and signal detection techniques.
 
 ---
+
