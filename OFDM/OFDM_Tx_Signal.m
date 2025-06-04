@@ -26,46 +26,6 @@ total_bits = num_active * num_symbols * bits_per_symbol;
 bits = randi([0 1], total_bits, 1); % random bits generation [1x4360] bits 
 symbols = reshape(bits, [], bits_per_symbol); % 2 bits per symbol for QPSK
 
-% Reshape the bit stream into a matrix with 2 columns (each row = 1 QPSK symbol).
-% e.g., bits = [1 0  0 1  1 1  0 0 ...]
-% symbols = 
-%    1 0  → Symbol 1  
-%    0 1  → Symbol 2  
-%    1 1  → Symbol 3  
-%    0 0  → Symbol 4
-
-qpsk_data = (2 * symbols(:,1) - 1) + 1j * (2 * symbols(:,2) - 1);
-qpsk_data = qpsk_data / sqrt(2);  % Normalized QPSK
-
-% Map bits to QPSK symbols
-% ---------------------------------------
-% QPSK maps 2 bits to 1 complex symbol:
-%   - First bit → real part (I)
-%   - Second bit → imaginary part (Q)
-% Mapping logic:
-%   bit 0 → -1, bit 1 → +1
-% So:
-%   [0 0] → -1 - j
-%   [0 1] → -1 + j
-%   [1 0] → +1 - j
-%   [1 1] → +1 + j
-
-% e.g., for [0 1]:
-% (2 * symbols(:,1) - 1) + 1j * (2 * symbols(:,2) - 1);
-% (2 * 0 - 1) + 1j*(2 * 1 - 1) = -1 + j 
-
-% This mapping is Gray-coded (adjacent symbols differ by one bit),
-% which reduces bit error rate in noisy channels.
-%
-% The QPSK symbol is created using:
-%   I = 2*bit1 - 1
-%   Q = 2*bit2 - 1
-% And then combined as: I + j*Q
-%
-% The optional normalization is:
-%   qpsk_data = qpsk_data / sqrt(2);
-
-
 %%%%%%%%%% OFDM Signal generation %%%%%%%%%%%
 ofdm_signal = [];
 symbol_matrix = zeros(num_symbols, ifft_size); % 20 x 720 
@@ -190,3 +150,17 @@ xlabel('Subcarrier Index (centered)');
 ylabel('Power');
 title('Power Spectrum of OFDM with Noise Floor');
 grid on;
+
+% Plot constellation for all symbols
+figure(5);
+scatter(real(rx_symbols_flat), imag(rx_symbols_flat), 10, 'filled');
+title('QPSK Constellation after OFDM Demodulation');
+xlabel('In-phase');
+ylabel('Quadrature');
+grid on;
+axis equal;
+xlim([-2 2] * sqrt(mean(abs(rx_symbols_flat).^2)));  % scale according to average power
+ylim([-2 2] * sqrt(mean(abs(rx_symbols_flat).^2)));
+
+
+
