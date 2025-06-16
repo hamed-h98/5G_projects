@@ -1,10 +1,13 @@
-# Python virtual environment
+# Python virtual environments
 .venv/
 venv/
+ENV/
+env/
 
-# Python cache
+# Byte-compiled / cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
 # OS-specific
 .DS_Store
@@ -12,5 +15,8 @@ __pycache__/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
-# VSCode settings (optional)
+# VS Code
 .vscode/
+
+# Misc
+*.log
