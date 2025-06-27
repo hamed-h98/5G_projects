@@ -1,0 +1,76 @@
+{
+  "Simulator": "5G Layer-2 Packet Simulator",
+  "Components": {
+    "PDCP": {
+      "Description": "Packet Data Convergence Protocol - generates packets and manages initial flow control.",
+      "Functions": [
+        "Generate packets with random size, priority, and direction (uplink/downlink).",
+        "Check buffer limit before enqueuing packet.",
+        "If buffer overflows, drop packet and count as lost.",
+        "Notify scheduler consumers about new packets."
+      ],
+      "Thread": "Producer Thread"
+    },
+    "RLC": {
+      "Description": "Radio Link Control - handles retransmissions and reliability control.",
+      "Functions": [
+        "Detect packet loss (simulate random loss with probability).",
+        "If packet lost and retransmission attempts < limit, re-enqueue packet and increment retransmission count.",
+        "If retransmission limit reached, mark packet as lost."
+      ],
+      "Related": "Inside processPacket function"
+    },
+    "MAC": {
+      "Description": "Medium Access Control - schedules packets for processing.",
+      "Functions": [
+        "Consumers wait for packet availability signal.",
+        "Use proportional fair scheduling to select highest priority packet between uplink and downlink queues.",
+        "Process packet, measure latency, log results.",
+        "Multiple consumer threads work in parallel."
+      ],
+      "Threads": "Multiple Consumer Threads (based on CPU cores)"
+    }
+  },
+  "Queues": {
+    "UplinkQueue": {
+      "Type": "Priority Queue (Max Heap)",
+      "PacketSelection": "Higher priority packets processed first"
+    },
+    "DownlinkQueue": {
+      "Type": "Priority Queue (Max Heap)",
+      "PacketSelection": "Higher priority packets processed first"
+    }
+  },
+  "PacketFlow": [
+    "Producer generates packet -> Check buffer -> Enqueue to Uplink or Downlink Queue",
+    "Scheduler thread wakes up -> Picks highest priority packet",
+    "Process packet -> Simulate loss",
+    "If lost: check retransmission count -> Re-enqueue or mark as lost",
+    "If successful: log packet info to CSV"
+  ],
+  "MultiThreading": {
+    "ProducerThread": "Generates packets and signals consumers.",
+    "ConsumerThreads": "Process packets from queues concurrently using proportional fair scheduling."
+  },
+  "Logging": {
+    "OutputFile": "packet_log.csv",
+    "Contents": [
+      "Packet ID",
+      "Direction (Uplink/Downlink)",
+      "Priority",
+      "Size (bytes)",
+      "Latency (ms)",
+      "Retransmissions count"
+    ]
+  },
+  "Statistics": {
+    "TotalPacketsProcessed": "Count of all successfully processed packets",
+    "PacketsLost": "Packets dropped due to buffer overflow or max retransmission attempts",
+    "PacketsRetransmitted": "Packets that were retransmitted at least once"
+  },
+  "EndOfSimulation": [
+    "All packets processed or dropped",
+    "Summary statistics printed to console",
+    "Packet log file closed"
+  ]
+}
